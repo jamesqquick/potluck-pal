@@ -1,0 +1,12 @@
+{
+  "id": "mig_cnj91pc7do7tvaqtsg7g",
+  "parentID": "mig_cnj8sqs7do7tvaqtsg4g",
+  "checksum": "1:3649b417bf66849fb1eb34b12170e55fbc4a176a20e1cd5f7f081a32a9dadf02",
+  "operations": [
+    {
+      "addTable": {
+        "table": "RSVPS"
+      }
+    }
+  ]
+}

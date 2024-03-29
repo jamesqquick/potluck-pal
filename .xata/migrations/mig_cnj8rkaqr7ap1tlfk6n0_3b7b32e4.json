@@ -1,0 +1,18 @@
+{
+  "id": "mig_cnj8rkaqr7ap1tlfk6n0",
+  "parentID": "mig_cnj8rh2qr7ap1tlfk6m0",
+  "checksum": "1:3b7b32e427c5b7c65254b6002712f0c161494245374a196e7dabf6a81e81b0aa",
+  "operations": [
+    {
+      "addColumn": {
+        "column": {
+          "name": "name",
+          "type": "string",
+          "notNull": true,
+          "defaultValue": "Item Name"
+        },
+        "table": "Items"
+      }
+    }
+  ]
+}

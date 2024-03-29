@@ -1,0 +1,19 @@
+{
+  "id": "mig_cnj91riqr7ap1tlfk6o0",
+  "parentID": "mig_cnj91pc7do7tvaqtsg7g",
+  "checksum": "1:4e7377c40c7b68468c3eb7ab4b1fcf74f58380107b40c96842ae2e94d9ecc67c",
+  "operations": [
+    {
+      "addColumn": {
+        "column": {
+          "name": "event",
+          "type": "link",
+          "link": {
+            "table": "Events"
+          }
+        },
+        "table": "RSVPS"
+      }
+    }
+  ]
+}

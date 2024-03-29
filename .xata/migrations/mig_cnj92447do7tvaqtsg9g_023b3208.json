@@ -1,0 +1,18 @@
+{
+  "id": "mig_cnj92447do7tvaqtsg9g",
+  "parentID": "mig_cnj91ts7do7tvaqtsg8g",
+  "checksum": "1:023b32088f56167ec26dc12e15ab9ea8fd48b5a9e5cb22220dea5da36a908e5c",
+  "operations": [
+    {
+      "addColumn": {
+        "column": {
+          "name": "status",
+          "type": "string",
+          "notNull": true,
+          "defaultValue": "GOING"
+        },
+        "table": "RSVPS"
+      }
+    }
+  ]
+}

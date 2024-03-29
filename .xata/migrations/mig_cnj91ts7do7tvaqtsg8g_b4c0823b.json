@@ -1,0 +1,18 @@
+{
+  "id": "mig_cnj91ts7do7tvaqtsg8g",
+  "parentID": "mig_cnj91riqr7ap1tlfk6o0",
+  "checksum": "1:b4c0823bde55273b75700521b7ac0bf147b582e1d3b7ad9045a34b5d8536f9a9",
+  "operations": [
+    {
+      "addColumn": {
+        "column": {
+          "name": "userId",
+          "type": "string",
+          "notNull": true,
+          "defaultValue": "User ID"
+        },
+        "table": "RSVPS"
+      }
+    }
+  ]
+}

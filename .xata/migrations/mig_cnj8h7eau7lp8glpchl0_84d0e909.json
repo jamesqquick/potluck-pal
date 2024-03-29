@@ -1,0 +1,18 @@
+{
+  "id": "mig_cnj8h7eau7lp8glpchl0",
+  "parentID": "mig_cnj8h32qr7ap1tlfk6jg",
+  "checksum": "1:84d0e9098bdf3ac7c1e7e7cfbe7d5bbef2132dd754a0797a5e86109da69e835f",
+  "operations": [
+    {
+      "addColumn": {
+        "column": {
+          "name": "description",
+          "type": "text",
+          "notNull": true,
+          "defaultValue": "Event Description"
+        },
+        "table": "Events"
+      }
+    }
+  ]
+}

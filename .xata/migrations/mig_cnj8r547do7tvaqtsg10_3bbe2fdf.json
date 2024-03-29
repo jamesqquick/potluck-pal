@@ -1,0 +1,18 @@
+{
+  "id": "mig_cnj8r547do7tvaqtsg10",
+  "parentID": "mig_cnj8his7do7tvaqtsfug",
+  "checksum": "1:3bbe2fdfddd3a6be15bb4998389c63b576bc8be199fbed35329e50284a874049",
+  "operations": [
+    {
+      "addColumn": {
+        "column": {
+          "name": "userId",
+          "type": "string",
+          "notNull": true,
+          "defaultValue": "User Id"
+        },
+        "table": "Events"
+      }
+    }
+  ]
+}
