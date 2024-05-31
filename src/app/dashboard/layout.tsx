@@ -1,29 +1,36 @@
 import React from 'react';
-import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 import { redirect } from 'next/navigation';
 import { getUserProfile } from '@/utils/userProfile';
+import { auth } from '@clerk/nextjs/server';
+import Link from 'next/link';
+import DashboardNav from './DashboardNav';
+import { getInvitesByUserCount } from '@/utils/rsvps';
 
 interface Props {
   children: React.ReactNode;
 }
 export default async function dashboardLayout({ children }: Props) {
-  const { getUser } = await getKindeServerSession();
-  const user = await getUser();
-  if (!user) {
-    redirect('/');
-  }
-  const userProfileResponse = await getUserProfile(user.id);
+  const { userId } = auth().protect();
 
+  const userProfileResponse = await getUserProfile(userId);
   if ('error' in userProfileResponse) {
     console.error(userProfileResponse.error);
     return null;
   }
 
   const userProfile = userProfileResponse.data;
+  const invitesCount = await getInvitesByUserCount(userId);
 
   if (!userProfile) {
     return redirect('/create-profile');
   }
 
-  return <div>{children}</div>;
+  return (
+    <div>
+      <div className="pb-10">
+        <DashboardNav invitesCount={invitesCount} />
+      </div>
+      {children}
+    </div>
+  );
 }

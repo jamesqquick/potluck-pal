@@ -5,6 +5,7 @@ import { Toaster } from 'react-hot-toast';
 import { Be_Vietnam_Pro } from 'next/font/google';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import { ClerkProvider } from '@clerk/nextjs';
 const beVietnamPro = Be_Vietnam_Pro({
   weight: ['300', '400', '500', '600', '700'],
   subsets: ['latin'],
@@ -32,12 +33,14 @@ export default function RootLayout({
   return (
     <html lang="en" className={beVietnamPro.className}>
       <body className=" overflow-x-hidden">
-        <Toaster position="top-center" toastOptions={{ duration: 30000 }} />
-        <div className=" bg-white max-w-7xl mx-auto px-8">
-          <Navbar />
-          <div>{children}</div>
-          <Footer />
-        </div>
+        <ClerkProvider>
+          <Toaster position="top-center" toastOptions={{ duration: 30000 }} />
+          <div className=" bg-white max-w-7xl mx-auto px-8">
+            <Navbar />
+            <div className="min-h-[60vh]">{children}</div>
+            <Footer />
+          </div>
+        </ClerkProvider>
       </body>
     </html>
   );

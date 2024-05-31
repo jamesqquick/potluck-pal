@@ -8,7 +8,19 @@ jiti('./src/env');
 
 /** @type {import('next').NextConfig} */
 
-const nextConfig = {};
+const nextConfig = {
+  //allowed image domains
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'us-east-1.storage.xata.sh',
+        port: '',
+        pathname: '**',
+      },
+    ],
+  },
+};
 export default withSentryConfig(
   nextConfig,
   {

@@ -11,13 +11,13 @@ export default function SubmitButton({ text }: Props) {
   return (
     <button
       type="submit"
-      className="h absolute right-1 top-4 pr-[19px] hover:translate-x-1 md:top-6"
+      className={`bg-primary text-lg text-white py-4 px-6 rounded-xl disabled:opacity-70 w-full`}
       disabled={pending}
     >
-      {text}
-      {pending && (
-        // spinner animation during form submission
-        <div className="h-6 w-6 animate-spin rounded-full border-b-2 border-teal-500" />
+      {!pending ? (
+        text
+      ) : (
+        <div className="h-6 w-6 mx-auto animate-spin rounded-full border-b-2 border-white" />
       )}
     </button>
   );

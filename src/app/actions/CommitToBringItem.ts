@@ -2,8 +2,8 @@
 
 import { ReturnValue } from '@/types/ReturnValue';
 import { getEventRSVPByUser, getItem } from '@/utils/items';
-import { ItemsRecord, getXataClient } from '@/xata';
-import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
+import { ItemRecord, getXataClient } from '@/xata';
+import { auth } from '@clerk/nextjs/server';
 import { revalidatePath } from 'next/cache';
 import { notFound, redirect } from 'next/navigation';
 
@@ -13,18 +13,19 @@ interface Props {
 
 export async function handleCommitToBringItem({
   itemId,
-}: Props): Promise<ReturnValue<ItemsRecord>> {
-  const { getUser } = getKindeServerSession();
-  const user = await getUser();
+}: Props): Promise<ReturnValue<ItemRecord>> {
+  const { userId } = auth();
 
-  if (!user) {
+  if (!userId) {
     return redirect('/');
   }
 
-  const userId = user.id;
-
   try {
     const getItemResponse = await getItem(itemId);
+
+    if (!getItemResponse) {
+      return notFound();
+    }
 
     if ('error' in getItemResponse) {
       return { error: getItemResponse.error };
@@ -60,10 +61,10 @@ export async function handleCommitToBringItem({
 
     const itemUpdate = { ...item, userId };
 
-    const updatedItem = (await getXataClient().db.Items.update(
+    const updatedItem = (await getXataClient().db.Item.update(
       itemId,
       itemUpdate
-    )) as ItemsRecord;
+    )) as ItemRecord;
 
     if (!updatedItem) {
       return notFound();

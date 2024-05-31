@@ -7,7 +7,7 @@ export const getUserProfile = async (
   try {
     const client = await getXataClient();
     const record = (await client.db.UserProfile.filter({
-      userId,
+      id: userId,
     }).getFirst()) as UserProfileRecord;
     return { data: record };
   } catch (err) {
@@ -49,7 +49,7 @@ export const createUserProfile = async (
   await getXataClient().db.UserProfile.create({
     username,
     name,
-    userId,
+    id: userId,
   });
   return { data: true };
 };

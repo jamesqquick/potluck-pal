@@ -1,7 +1,9 @@
-import { UserProfileRecord } from '@/xata';
+import { env } from '@/env';
+import { newEventFormSchema } from '@/schemas/NewEvent';
+import { MinimumImageData } from '@/utils/EventImages';
+import { EventImage, UserProfileRecord } from '@/xata';
 import { createContext, useContext, useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { z } from 'zod';
 export type EventData = EventDetails & {
   items: ItemInput[];
   attendees: AttendeeInput[];
@@ -13,27 +15,6 @@ export type AttendeeInput = {
   username: string;
 };
 
-const attendeeFormSchema = z.object({
-  name: z.string(),
-  dateAndTime: z.string(),
-  location: z.string(),
-  description: z.string(),
-  items: z.array(
-    z.object({
-      id: z.string(),
-      name: z.string(),
-      quantity: z.number(),
-    })
-  ),
-  attendees: z.array(
-    z.object({
-      id: z.string(),
-      name: z.string(),
-      username: z.string(),
-    })
-  ),
-});
-
 export type ItemInput = {
   id: string;
   name: string;
@@ -42,35 +23,49 @@ export type ItemInput = {
 
 export type EventDetails = {
   name: string;
-  dateAndTime: string;
+  date: string;
   location: string;
   description: string;
+  imageURL: string;
+  imageId: string;
 };
+
 export type NewEventContextValue = {
   eventData: EventData;
   dataLoaded: boolean;
   updateEventDetails: (eventDetails: Partial<EventDetails>) => void;
   addAttendee: (attendee: UserProfileRecord) => void;
+  updateItem: (id: string, item: Partial<ItemInput>) => void;
+  addItem: () => void;
   removeAttendee: (id: string) => void;
+  removeItem: (id: string) => void;
   updateItems: (items: ItemInput[]) => void;
+  clearLocalStorage: () => void;
+  eventImages: EventImage[];
+  selectRandomImage: () => void;
 };
 
 const NewEventFormContext = createContext<NewEventContextValue | null>(null);
 
 export function EventFormContextProvider({
   children,
+  eventImages,
 }: {
   children: React.ReactNode;
+  eventImages: MinimumImageData[];
 }) {
-  //TODO: track state for current step
   const [eventData, setEventData] = useState<EventData>({
     name: '',
-    dateAndTime: '',
+    date: '',
     location: '',
     description: '',
     items: [{ id: uuidv4(), name: '', quantity: 1 }],
     attendees: [],
+    imageURL: env.NEXT_PUBLIC_DEFAULT_IMAGE_URL,
+    imageId: eventImages[0].id,
   });
+
+  const [selectedImageIndex, setselectedImageIndex] = useState(0);
 
   const [dataLoaded, setDataLoaded] = useState(false);
 
@@ -85,6 +80,16 @@ export function EventFormContextProvider({
     }
   }, [eventData, dataLoaded]);
 
+  const selectRandomImage = () => {
+    const random = Math.floor(Math.random() * eventImages.length);
+    setEventData((prev) => ({
+      ...prev,
+      imageURL: eventImages[random].url,
+      imageId: eventImages[random].id,
+    }));
+    setselectedImageIndex(random);
+  };
+
   const updateEventDetails = (eventDetails: Partial<EventDetails>) => {
     setEventData((prev) => ({
       ...prev,
@@ -92,10 +97,31 @@ export function EventFormContextProvider({
     }));
   };
 
+  const removeItem = (id: string) => {
+    setEventData((prev) => ({
+      ...prev,
+      items: prev.items.filter((item) => item.id !== id),
+    }));
+  };
+
   const updateItems = (items: ItemInput[]) => {
     setEventData((prev) => ({
       ...prev,
       items,
+    }));
+  };
+
+  const addItem = () => {
+    setEventData((prev) => ({
+      ...prev,
+      items: [...prev.items, { id: uuidv4(), name: '', quantity: 1 }],
+    }));
+  };
+
+  const updateItem = (id: string, item: Partial<ItemInput>) => {
+    setEventData((prev) => ({
+      ...prev,
+      items: prev.items.map((i) => (i.id === id ? { ...i, ...item } : i)),
     }));
   };
 
@@ -114,26 +140,35 @@ export function EventFormContextProvider({
   };
 
   const saveDataToLocalStorage = (currentEventData: EventData) => {
-    localStorage.setItem('eventData', JSON.stringify(currentEventData));
+    localStorage.setItem(
+      'potluckpal_eventData',
+      JSON.stringify(currentEventData)
+    );
+  };
+
+  const clearLocalStorage = () => {
+    localStorage.removeItem('potluckpal_eventData');
   };
 
   const readFromLocalStorage = () => {
     const defaultData = {
       name: '',
-      dateAndTime: '',
+      date: '',
       location: '',
       description: '',
       items: [{ id: uuidv4(), name: '', quantity: 1 }],
       attendees: [],
+      imageURL: eventImages[0].url,
+      imageId: eventImages[0].id,
     };
-    const loadedDataString = localStorage.getItem('eventData');
-
+    const loadedDataString = localStorage.getItem('potluckpal_eventData');
     if (!loadedDataString) return setEventData(defaultData);
 
     try {
-      const parsed = attendeeFormSchema.parse(JSON.parse(loadedDataString));
+      const parsed = newEventFormSchema.parse(JSON.parse(loadedDataString));
       setEventData(parsed);
     } catch (error) {
+      console.error(error);
       setEventData(defaultData);
     }
   };
@@ -145,8 +180,14 @@ export function EventFormContextProvider({
         updateEventDetails,
         addAttendee,
         removeAttendee,
+        clearLocalStorage,
         updateItems,
         dataLoaded,
+        updateItem,
+        addItem,
+        removeItem,
+        eventImages,
+        selectRandomImage,
       }}
     >
       {children}

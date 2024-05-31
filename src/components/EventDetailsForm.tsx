@@ -1,25 +1,13 @@
 'use client';
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { useNewEventFormContext } from '@/context/NewEventContext';
+import SubmitButton from './SubmitButton';
+import { goToEventItemsAction } from '@/app/actions/NewEventFormActions';
 
 export default function EventDetailsForm() {
-  const router = useRouter();
   const { updateEventDetails, eventData } = useNewEventFormContext();
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    // updateEventDetails({
-    //   name: e.currentTarget.fullName.value,
-    //   dateAndTime: e.currentTarget.dateAndTime.value,
-    //   location: e.currentTarget.location.value,
-    //   description: e.currentTarget.description.value,
-    // });
-    router.push('step-2');
-  };
-
   return (
-    <form onSubmit={handleSubmit}>
+    <form action={goToEventItemsAction}>
       <div className="flex flex-col space-y-6">
         <div>
           <label className="block text-gray-1 mb-1" htmlFor="fullName">
@@ -39,24 +27,25 @@ export default function EventDetailsForm() {
           />
         </div>
         <div className="relative">
-          <label className="block text-gray-1 mb-1" htmlFor="dateAndTime">
-            Date and Time
+          <label className="block text-gray-1 mb-1" htmlFor="date">
+            Date
           </label>
           <div className="relative">
             <input
-              type="text"
+              type="date"
               required
-              id="dateAndTime"
-              name="dateAndTime"
+              id="date"
+              name="date"
               placeholder="Mon April 7th at 5pm"
               className={`border border-gray-1 w-full p-4 rounded-xl`}
-              value={eventData.dateAndTime}
+              value={eventData.date}
               onChange={(e) => {
-                updateEventDetails({ dateAndTime: e.currentTarget.value });
+                updateEventDetails({ date: e.currentTarget.value });
               }}
             />
           </div>
         </div>
+
         <div>
           <label className="block text-gray-1 mb-1" htmlFor="location">
             Location
@@ -92,12 +81,7 @@ export default function EventDetailsForm() {
         </div>
       </div>{' '}
       <div className="pt-10">
-        <button
-          type="submit"
-          className={`bg-primary text-lg text-white py-4 px-6 rounded-xl disabled:opacity-50 w-full`}
-        >
-          Continue
-        </button>
+        <SubmitButton text="Continue" />
       </div>
     </form>
   );
